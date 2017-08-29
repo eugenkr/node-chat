@@ -13,23 +13,19 @@ app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
   console.log('New user connected!');
-  
-  socket.on('disconnect', () => {
-    console.log('User was disconnected!');
-  });
-
-  socket.emit('newMessage', {
-    from: 'Kiril',
-    text: 'Hi there!',
-    createdAt: new Date()
-  });
-
-  socket.on('createEmail', (data) => {
-    console.log('Create email: ', data);
-  });
-
+    
   socket.on('createMessage', (data) => {
     console.log('Create message: ', data);
+
+    io.emit('newMessage', {
+      from: data.from,
+      text: data.text,
+      createdAt: new Date().getTime()
+    });
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User was disconnected!');
   });
 });
 
