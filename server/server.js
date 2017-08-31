@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const socketIO = require('socket.io');
-const { createMessage } = require('./utils/message.js');
+const { createMessage, createLocationMessage } = require('./utils/message.js');
 
 const app = express();
 const server = http.createServer(app);
@@ -11,7 +11,9 @@ const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 
 app.use(express.static(publicPath));
-console.log(createMessage)
+
+console.log(createMessage);
+
 io.on('connection', (socket) => {
   console.log('New user connected!');
     
@@ -31,6 +33,10 @@ io.on('connection', (socket) => {
     //   text: data.text,
     //   createdAt: new Date().getTime()
     // });
+  });
+
+  socket.on('createLocationMessage', (p) => {
+    io.emit('newLocationMessage', createLocationMessage('Admin', p));
   });
 
   socket.on('disconnect', () => {
