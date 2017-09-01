@@ -12,8 +12,6 @@ const port = process.env.PORT || 3000;
 
 app.use(express.static(publicPath));
 
-console.log(createMessage);
-
 io.on('connection', (socket) => {
   console.log('New user connected!');
     
@@ -21,12 +19,13 @@ io.on('connection', (socket) => {
 
   socket.broadcast.emit('newMessage', createMessage('Admin', 'New user joined the chat!'));
 
-  socket.on('createMessage', (data) => {
+  socket.on('createMessage', (data, callback) => {
     console.log('Create message: ', data);
 
     //  sends to every connection
     io.emit('newMessage', createMessage(data.from, data.text));
 
+    callback();
     // sends to every connection but this one
     // socket.broadcast.emit('newMessage', {
     //   from: data.from,
